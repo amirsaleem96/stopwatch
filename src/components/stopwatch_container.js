@@ -26,6 +26,7 @@ class StopwatchContainer extends Component {
             case 'snapshot' :   let snapshots = this.state.snapshots;
                                 var { minutes, seconds, milliseconds } = this.state;
                                 if(minutes == 0 && seconds == 0 && milliseconds == 0){
+                                    alert('OOPS! it seems there is nothing to take snapshot of.');
                                     return;
                                 }
                                 minutes = this.getDoubleValue(minutes);
@@ -56,6 +57,7 @@ class StopwatchContainer extends Component {
             default : return
         }
     }
+    // method to increment milliseconds, seconds and minutes
     incrementTimer() {
         let { milliseconds, seconds, minutes } = this.state;
         milliseconds++;
@@ -81,9 +83,9 @@ class StopwatchContainer extends Component {
             <div className = 'stopwatch-container'>
                 <div>
                     <p>
-                        <span>{this.getDoubleValue(minutes)}:</span>
-                        <span>{this.getDoubleValue(seconds)}:</span>
-                        <span>{this.getDoubleValue(milliseconds)}</span>
+                        <span>{ this.getDoubleValue(minutes) }:</span>
+                        <span>{ this.getDoubleValue(seconds) }:</span>
+                        <span>{ this.getDoubleValue(milliseconds) }</span>
                     </p>
                     {
                         this.state.buttons.map((btn, index) => {
