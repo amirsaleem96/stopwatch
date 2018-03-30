@@ -8,37 +8,50 @@ class StopwatchContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            minutes: '00',
-            seconds: '00',
-            milliseconds: '00',
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
             watchHandle: null,
-            snapshots: []
+            snapshots: [],
+            buttons: ['start','snapshot','pause','reset']
         };
         this.handleWatch = this.handleWatch.bind(this);
         this.incrementTimer = this.incrementTimer.bind(this);
     }
-    handleWatch(type) {
+    handleWatch(type) { 
         switch(type) {
             case 'start' : let watchHandle = setInterval(this.incrementTimer, 1);
                             this.setState({ watchHandle });
                             break;
             case 'snapshot' :   let snapshots = this.state.snapshots;
                                 var { minutes, seconds, milliseconds } = this.state;
-                                minutes > 9 ? minutes : `0${minutes}`;
-                                seconds > 9 ? seconds : `0${seconds}`;
-                                milliseconds > 9 ? milliseconds : `0${milliseconds}`;
+                                if(minutes == 0 && seconds == 0 && milliseconds == 0){
+                                    return;
+                                }
+                                minutes = this.getDoubleValue(minutes);
+                                seconds = this.getDoubleValue(seconds);
+                                milliseconds = this.getDoubleValue(milliseconds);
                                 snapshots.push({ minutes, seconds, milliseconds });
                                 this.setState({ snapshots })
                                 break;
             case 'pause' : clearInterval(this.state.watchHandle);   
                             break;
             case 'reset' : clearInterval(this.state.watchHandle);
-                            this.setState({
-                                minutes: '00',
-                                seconds: '00',
-                                milliseconds: '00',
-                                snapshots: []
-                            });
+                            var userConfirm = confirm('reset snapshot as well ?');
+                            if(userConfirm){
+                                this.setState({
+                                    minutes: 0,
+                                    seconds: 0,
+                                    milliseconds: 0,
+                                    snapshots: []
+                                });
+                            } else {
+                                this.setState({
+                                    minutes: 0,
+                                    seconds: 0,
+                                    milliseconds: 0
+                                });
+                            }
                             break;
             default : return
         }
@@ -46,7 +59,7 @@ class StopwatchContainer extends Component {
     incrementTimer() {
         let { milliseconds, seconds, minutes } = this.state;
         milliseconds++;
-        if(milliseconds >= 60 ){
+        if(milliseconds >= 100 ){
             milliseconds = 0;
             seconds++;
             if(seconds >= 60){
@@ -54,31 +67,33 @@ class StopwatchContainer extends Component {
                 minutes++;
             }
         }
-        this.setState({ milliseconds, seconds, minutes })
+        this.setState({ milliseconds, seconds, minutes });
+    }
+    getDoubleValue(val) {
+        val > 9 ? val = val : val = `0${val}`;
+        return val;
     }
     // render method
     render() {
         // returning JSX
         var { minutes, seconds, milliseconds } = this.state;
-        minutes > 9 ? minutes : `0${minutes}`;
-        seconds > 9 ? seconds : `0${seconds}`;
-        milliseconds > 9 ? milliseconds : `0${milliseconds}`;
         return(
             <div className = 'stopwatch-container'>
                 <div>
                     <p>
-                        <span>{minutes}:</span>
-                        <span>{seconds}:</span>
-                        <span>{milliseconds}</span>
+                        <span>{this.getDoubleValue(minutes)}:</span>
+                        <span>{this.getDoubleValue(seconds)}:</span>
+                        <span>{this.getDoubleValue(milliseconds)}</span>
                     </p>
-                    <button onClick = {() => {this.handleWatch('start')}}>Start</button>
-                    <button onClick = {() => {this.handleWatch('snapshot')}}>Snapshot</button>
-                    <button onClick = {() => {this.handleWatch('pause')}}>Pause</button>
-                    <button onClick = {() => {this.handleWatch('reset')}}>Reset</button>
-                    <ul>
+                    {
+                        this.state.buttons.map((btn, index) => {
+                            return <button key = {index} onClick = {() => {this.handleWatch(btn)}}>{btn}</button>
+                        })
+                    }
+                    <ul className = 'list-group'>
                     {
                         this.state.snapshots.map((elem, index) => {
-                            return <li key = {index}>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</li>
+                            return <li className = 'list-group-item' key = {index}>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</li>
                         })
                     }
                     </ul>
