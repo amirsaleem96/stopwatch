@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
-import { getSnapshots } from '../actions/index';
+import { addSnapshot, deleteSnapshot } from '../actions/index';
 
 const prettyPrint = (message, styles) => {
     message = `%c${message}`;
@@ -61,6 +61,7 @@ class StopwatchContainer extends Component {
     }
     // print some cool messages on console as soon as the component is mounted in DOM
     componentDidMount() {
+        console.log(this.props);
        let styles = {
            'color': 'teal',
            'font-size': '50px',
@@ -104,12 +105,7 @@ class StopwatchContainer extends Component {
                                     alert('OOPS! it seems there is nothing to take snapshot of.');
                                     return;
                                 }
-                                // capture existing snapshots from reducer
-                                let snapshots = this.props.snapshots;
-                                // push new snapshot to existing snapshots array coming from reducer
-                                snapshots.push({ minutes, seconds, milliseconds });
-                                // dispatch action to update the snapshot reducer
-                                this.props.getSnapshots( snapshots );
+                                this.props.addSnapshot( { minutes, seconds, milliseconds } );
                                 break;
             case 'pause' :  clearInterval(this.state.watchHandle); 
                             buttons[index] = startButton;
@@ -158,8 +154,7 @@ class StopwatchContainer extends Component {
             return  <li className = 'list-group-item' key = {index}>
                         <strong>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</strong>
                         <i className = 'fa fa-trash delete-snapshot' onClick = {() => {
-                            let snapshots = this.props.snapshots;
-                            this.props.getSnapshots( snapshots );
+                            this.props.deleteSnapshot( index );
                         }}></i>
                     </li>
         })
@@ -204,4 +199,4 @@ function mapStateToProps( snapshots ) {
 }
 
 // connect StopwatchContainer to Application Level Redux State
-export default connect(mapStateToProps, { getSnapshots })(StopwatchContainer);
+export default connect(mapStateToProps, { addSnapshot, deleteSnapshot })(StopwatchContainer);
