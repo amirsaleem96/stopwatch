@@ -162,4 +162,8 @@ class StopwatchContainer extends Component {
 
 // exporting the stopwatch so that other files can make use of this
 
-export default StopwatchContainer;
+function mapStateToProps( stopwatch ) {
+    return stopwatch;
+}
+
+export default connect(mapStateToProps)(StopwatchContainer);

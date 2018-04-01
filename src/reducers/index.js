@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
+import stopwatchReducer from './reducer_stopwatch_container';
 
 const rootReducer = combineReducers({
-  state: (state = {}) => state
+  watch: stopwatchReducer
 });
 
 export default rootReducer;
