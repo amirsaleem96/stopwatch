@@ -18,27 +18,32 @@ class StopwatchContainer extends Component {
                 {
                     type: 'start', 
                     text: 'Start',
-                    class: 'btn btn-success stopwatch-controller'
+                    class: 'btn btn-success stopwatch-controller',
+                    disabled: false
                 },
                 { 
                     type: 'snapshot',
                     text: 'Snapshot',
-                    class: 'btn btn-primary stopwatch-controller'
+                    class: 'btn btn-primary stopwatch-controller',
+                    disabled: false
                 },
                 { 
                     type: 'pause',
                     text: 'Pause',
-                    class: 'btn btn-primary stopwatch-controller'
+                    class: 'btn btn-primary stopwatch-controller',
+                    disabled: false
                 },
                 { 
                     type: 'reset',
                     text: 'Reset',
-                    class: 'btn btn-danger stopwatch-controller'
+                    class: 'btn btn-danger stopwatch-controller',
+                    disabled: false
                 }, 
                 { 
                     type: 'clear-snapshots',
                     text: 'Clear Snapshots',
-                    class: 'btn btn-primary stopwatch-controller'
+                    class: 'btn btn-primary stopwatch-controller',
+                    disabled: false
                 }
             ]
         };
@@ -50,9 +55,14 @@ class StopwatchContainer extends Component {
         console.log("%c...GEEK?","color:teal;font-size:30px;font-weight:900;font-family:sans-serif");
         console.log("%cWe are hiring!","color:orange;font-size:25px;font-family:sans-serif;");
     }
-    handleWatch(type) { 
+    handleWatch(type, index) { 
+        let buttons = this.state.buttons;
+        buttons.forEach((aButton) => {
+            aButton['disabled'] = false;
+        });
         switch(type) {
-            case 'start' : let watchHandle = setInterval(this.incrementTimer, 1);
+            case 'start' :  let watchHandle = setInterval(this.incrementTimer, 1);
+                            buttons[index]['disabled'] = true;
                             this.setState({ watchHandle });
                             break;
             case 'snapshot' :   let snapshots = this.state.snapshots;
@@ -67,9 +77,12 @@ class StopwatchContainer extends Component {
                                 snapshots.push({ minutes, seconds, milliseconds });
                                 this.setState({ snapshots })
                                 break;
-            case 'pause' : clearInterval(this.state.watchHandle);   
+            case 'pause' :  clearInterval(this.state.watchHandle); 
+                            buttons[index]['disabled'] = true;
+                            this.setState({ buttons })
                             break;
             case 'reset' : clearInterval(this.state.watchHandle);
+                            buttons[index]['disabled'] = true;
                             this.setState({
                                 minutes: 0,
                                 seconds: 0,
@@ -77,6 +90,7 @@ class StopwatchContainer extends Component {
                             });
                             break;
             case 'clear-snapshots' : clearInterval(this.state.watchHandle);
+                                     buttons[index]['disabled'] = true;
                                      this.setState({
                                          snapshots: []
                                      });
@@ -133,7 +147,7 @@ class StopwatchContainer extends Component {
                         this.state.buttons.map((btn, index) => {
                             return  <button className = { btn.class } 
                                             key = {index} 
-                                            onClick = { () => { this.handleWatch( btn.type ) } }>
+                                            onClick = { (e) => { this.handleWatch( btn.type, index ) } } disabled = {btn.disabled}>
                                             { btn.text }
                                     </button>
                         })
