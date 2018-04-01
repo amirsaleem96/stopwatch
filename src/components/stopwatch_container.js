@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 // This is a main container for stopwatch
 
@@ -17,6 +18,11 @@ class StopwatchContainer extends Component {
         };
         this.handleWatch = this.handleWatch.bind(this);
         this.incrementTimer = this.incrementTimer.bind(this);
+        this.renderSnapshots = this.renderSnapshots.bind(this);
+    }
+    componentDidMount() {
+        console.log("%c...GEEK?","color:teal;font-size:30px;font-weight:900;font-family:sans-serif");
+        console.log("%cWe are hiring!","color:orange;font-size:25px;font-family:sans-serif;");
     }
     handleWatch(type) { 
         switch(type) {
@@ -75,6 +81,20 @@ class StopwatchContainer extends Component {
         val > 9 ? val = val : val = `0${val}`;
         return val;
     }
+    renderSnapshots() {
+        return this.state.snapshots.map((elem, index) => {
+            return  <li 
+                        className = 'list-group-item' 
+                        key = {index}>
+                        {`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}
+                        <i className = 'fa fa-trash delete-snapshot' onClick = {() => {
+                            let snapshots = this.state.snapshots;
+                            snapshots.splice(index,1);
+                            this.setState({ snapshots });
+                        }}></i>
+                    </li>
+        })
+    }
     // render method
     render() {
         // returning JSX
@@ -86,6 +106,7 @@ class StopwatchContainer extends Component {
                         <span>{ this.getDoubleValue(minutes) }:</span>
                         <span>{ this.getDoubleValue(seconds) }:</span>
                         <span>{ this.getDoubleValue(milliseconds) }</span>
+                        <span id = "status"></span>
                     </p>
                     {
                         this.state.buttons.map((btn, index) => {
@@ -93,11 +114,7 @@ class StopwatchContainer extends Component {
                         })
                     }
                     <ul className = 'list-group'>
-                    {
-                        this.state.snapshots.map((elem, index) => {
-                            return <li className = 'list-group-item' key = {index}>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</li>
-                        })
-                    }
+                        { this.renderSnapshots() }
                     </ul>
                 </div>
             </div>
