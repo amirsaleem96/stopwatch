@@ -3,12 +3,17 @@ import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { getSnapshots } from '../actions/index';
 
-// This is a main container for stopwatch
+/**
+ * @description: Component to render stopwatch
+ * @redux: Snaphots are stored in redux state
+ * @param: none
+ */ 
 
 class StopwatchContainer extends Component {
     // constructor method
     constructor(props) {
         super(props);
+        // component level state
         this.state = {
             minutes: 0,
             seconds: 0,
@@ -45,19 +50,23 @@ class StopwatchContainer extends Component {
         this.incrementTimer = this.incrementTimer.bind(this);
         this.renderSnapshots = this.renderSnapshots.bind(this);
     }
+    // print some cool messages on console as soon as the component is mounted in DOM
     componentDidMount() {
         console.log("%c...GEEK?","color:teal;font-size:30px;font-weight:900;font-family:sans-serif");
         console.log("%cWe are hiring!","color:orange;font-size:25px;font-family:sans-serif;");
     }
+    // handle watch states on button click
     handleWatch(type, index) { 
         let snapshots = this.state.snapshots;
         let { minutes, seconds, milliseconds, buttons } = this.state;
+        // pause button object
         let pauseButton =  {
             type: 'pause',
             text: 'Pause',
             class: 'btn btn-primary stopwatch-controller',
             disabled: false
         }
+        // start button object
         let startButton = {
             type: 'start',
             text: 'Start',
@@ -67,20 +76,26 @@ class StopwatchContainer extends Component {
         minutes = this.getDoubleValue(minutes);
         seconds = this.getDoubleValue(seconds);
         milliseconds = this.getDoubleValue(milliseconds);
+        // enable all buttons
         buttons.forEach((aButton) => {
             aButton['disabled'] = false;
         });
         switch(type) {
             case 'start':   let watchHandle = setInterval(this.incrementTimer, 1);
+                            // start button is clicked, change start button to pause button
                             buttons[index] = pauseButton;
                             this.setState({ watchHandle });
                             break;
-            case 'snapshot' :   if(minutes == 0 && seconds == 0 && milliseconds == 0){
+            case 'snapshot' :   // initial state? snapshots cannot be taken
+                                if(minutes == 0 && seconds == 0 && milliseconds == 0){
                                     alert('OOPS! it seems there is nothing to take snapshot of.');
                                     return;
                                 }
+                                // capture existing snapshots from reducer
                                 let snapshots = this.props.snapshots;
+                                // push new snapshot to existing snapshots array coming from reducer
                                 snapshots.push({ minutes, seconds, milliseconds });
+                                // dispatch action to update the snapshot reducer
                                 this.props.getSnapshots( snapshots );
                                 break;
             case 'pause' :  clearInterval(this.state.watchHandle); 
@@ -102,20 +117,29 @@ class StopwatchContainer extends Component {
     incrementTimer() {
         let { milliseconds, seconds, minutes } = this.state;
         milliseconds++;
+        // 100 milliseconds have been passed?
         if(milliseconds >= 100 ){
+            // start milliseconds with zero
             milliseconds = 0;
+            // increment seconds by 1
             seconds++;
+            // 60 seconds have been passed ? time to increment the minute
             if(seconds >= 60){
+                // set seconds to 0
                 seconds = 0;
+                // increment minutes by 1
                 minutes++;
             }
         }
+        // set the new state
         this.setState({ milliseconds, seconds, minutes });
     }
+    // value is less than 9 ? prepend 0 to make it double digit
     getDoubleValue(val) {
         val > 9 ? val = val : val = `0${val}`;
         return val;
     }
+    // method to render snapshots taken by user (snapshots are coming from reducer)
     renderSnapshots() {
         return this.props.snapshots.map((elem, index) => {
             return  <li className = 'list-group-item' key = {index}>
@@ -133,6 +157,7 @@ class StopwatchContainer extends Component {
         // returning JSX
         let { minutes, seconds, milliseconds } = this.state;
         return(
+            // main stopwatch container
             <div className = 'stopwatch-container'>
                 <div>
                     <p className = 'watch-data'>
@@ -166,4 +191,5 @@ function mapStateToProps( stopwatch ) {
     return stopwatch;
 }
 
+// connect StopwatchContainer with Application Level Redux State
 export default connect(mapStateToProps, { getSnapshots } )(StopwatchContainer);
