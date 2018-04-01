@@ -92,8 +92,7 @@ class StopwatchContainer extends Component {
                             buttons[index]['disabled'] = true;
                             this.setState({ minutes: 0, seconds: 0, milliseconds: 0 });
                             break;
-            case 'clear-snapshots' : clearInterval(this.state.watchHandle);
-                                     buttons[index]['disabled'] = true;
+            case 'clear-snapshots' : buttons[index]['disabled'] = true;
                                      this.props.getSnapshots( [] );
                                      break;
             default : return
