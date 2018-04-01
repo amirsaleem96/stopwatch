@@ -50,26 +50,25 @@ class StopwatchContainer extends Component {
         console.log("%cWe are hiring!","color:orange;font-size:25px;font-family:sans-serif;");
     }
     handleWatch(type, index) { 
-        let { buttons } = this.state;
+        let snapshots = this.state.snapshots;
+        let { minutes, seconds, milliseconds, buttons } = this.state;
+        minutes = this.getDoubleValue(minutes);
+        seconds = this.getDoubleValue(seconds);
+        milliseconds = this.getDoubleValue(milliseconds);
         buttons.forEach((aButton) => {
             aButton['disabled'] = false;
         });
         switch(type) {
-            case 'start' :  let watchHandle = setInterval(this.incrementTimer, 1);
+            case 'start':   let watchHandle = setInterval(this.incrementTimer, 1);
                             buttons[index]['type'] = 'pause';
                             buttons[index]['text'] = 'Pause';
                             buttons[index]['class'] = 'btn btn-primary stopwatch-controller'
                             this.setState({ watchHandle });
                             break;
-            case 'snapshot' :   let snapshots = this.state.snapshots;
-                                let { minutes, seconds, milliseconds } = this.state;
-                                if(minutes == 0 && seconds == 0 && milliseconds == 0){
+            case 'snapshot' :   if(minutes == 0 && seconds == 0 && milliseconds == 0){
                                     alert('OOPS! it seems there is nothing to take snapshot of.');
                                     return;
                                 }
-                                minutes = this.getDoubleValue(minutes);
-                                seconds = this.getDoubleValue(seconds);
-                                milliseconds = this.getDoubleValue(milliseconds);
                                 snapshots.push({ minutes, seconds, milliseconds });
                                 this.setState({ snapshots })
                                 break;
@@ -77,7 +76,7 @@ class StopwatchContainer extends Component {
                             buttons[index]['type'] = 'start';
                             buttons[index]['text'] = 'Start';
                             buttons[index]['class'] = 'btn btn-success stopwatch-controller'
-                            this.setState({ buttons })
+                            this.setState({ buttons });
                             break;
             case 'reset' : clearInterval(this.state.watchHandle);
                             buttons[0]['type'] = 'start';
