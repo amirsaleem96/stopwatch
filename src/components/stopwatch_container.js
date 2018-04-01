@@ -158,9 +158,8 @@ class StopwatchContainer extends Component {
             return  <li className = 'list-group-item' key = {index}>
                         <strong>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</strong>
                         <i className = 'fa fa-trash delete-snapshot' onClick = {() => {
-                            let snapshots = this.state.snapshots;
-                            snapshots.splice(index,1);
-                            this.setState({ snapshots });
+                            let snapshots = this.props.snapshots;
+                            this.props.getSnapshots( snapshots );
                         }}></i>
                     </li>
         })
@@ -200,9 +199,9 @@ class StopwatchContainer extends Component {
 
 // get the state from reducer
 
-function mapStateToProps( stopwatch ) {
-    return stopwatch;
+function mapStateToProps( snapshots ) {
+    return snapshots;
 }
 
 // connect StopwatchContainer to Application Level Redux State
-export default connect(mapStateToProps, { getSnapshots } )(StopwatchContainer);
+export default connect(mapStateToProps, { getSnapshots })(StopwatchContainer);
