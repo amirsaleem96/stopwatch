@@ -185,11 +185,11 @@ class StopwatchContainer extends Component {
     }
 }
 
-// exporting the stopwatch so that other files can make use of this
+// get the state from reducer
 
 function mapStateToProps( stopwatch ) {
     return stopwatch;
 }
 
-// connect StopwatchContainer with Application Level Redux State
+// connect StopwatchContainer to Application Level Redux State
 export default connect(mapStateToProps, { getSnapshots } )(StopwatchContainer);
