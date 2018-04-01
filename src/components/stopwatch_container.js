@@ -3,6 +3,15 @@ import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
 import { getSnapshots } from '../actions/index';
 
+const prettyPrint = (message, styles) => {
+    message = `%c${message}`;
+    let cssStyles = "";
+    for(var key in styles){
+        cssStyles += `${key}:${styles[key]};`;
+    }
+    console.log(message, cssStyles);
+}
+
 /**
  * @description: Component to render stopwatch
  * @redux: Snaphots are stored in redux state
@@ -52,8 +61,12 @@ class StopwatchContainer extends Component {
     }
     // print some cool messages on console as soon as the component is mounted in DOM
     componentDidMount() {
-        console.log("%c...GEEK?","color:teal;font-size:30px;font-weight:900;font-family:sans-serif");
-        console.log("%cWe are hiring!","color:orange;font-size:25px;font-family:sans-serif;");
+       let styles = {
+           'color': 'teal',
+           'font-size': '50px',
+           'font-weight': '900'
+       }
+       prettyPrint('GEEK?', styles);
     }
     // handle watch states on button click
     handleWatch(type, index) { 
