@@ -14,7 +14,33 @@ class StopwatchContainer extends Component {
             milliseconds: 0,
             watchHandle: null,
             snapshots: [],
-            buttons: ['start','snapshot','pause','reset','clear-snapshots']
+            buttons: [
+                {
+                    type: 'start', 
+                    text: 'Start',
+                    class: 'btn btn-success stopwatch-controller'
+                },
+                { 
+                    type: 'snapshot',
+                    text: 'Snapshot',
+                    class: 'btn btn-primary stopwatch-controller'
+                },
+                { 
+                    type: 'pause',
+                    text: 'Pause',
+                    class: 'btn btn-primary stopwatch-controller'
+                },
+                { 
+                    type: 'reset',
+                    text: 'Reset',
+                    class: 'btn btn-danger stopwatch-controller'
+                }, 
+                { 
+                    type: 'clear-snapshots',
+                    text: 'Clear Snapshots',
+                    class: 'btn btn-primary stopwatch-controller'
+                }
+            ]
         };
         this.handleWatch = this.handleWatch.bind(this);
         this.incrementTimer = this.incrementTimer.bind(this);
@@ -81,7 +107,7 @@ class StopwatchContainer extends Component {
             return  <li 
                         className = 'list-group-item' 
                         key = {index}>
-                        {`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}
+                        <strong>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</strong>
                         <i className = 'fa fa-trash delete-snapshot' onClick = {() => {
                             let snapshots = this.state.snapshots;
                             snapshots.splice(index,1);
@@ -105,7 +131,11 @@ class StopwatchContainer extends Component {
                     <div className = 'controller-wrapper'>
                     {
                         this.state.buttons.map((btn, index) => {
-                            return <button className = 'btn btn-primary stopwatch-controller' key = {index} onClick = { () => {this.handleWatch(btn)} }>{btn.split('-').join(' ')}</button>
+                            return  <button className = { btn.class } 
+                                            key = {index} 
+                                            onClick = { () => { this.handleWatch( btn.type ) } }>
+                                            { btn.text }
+                                    </button>
                         })
                     }
                     </div>
