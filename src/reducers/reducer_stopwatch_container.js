@@ -1,7 +1,7 @@
-export default function( state ) {
-    return {
-        minutes: 0,
-        seconds: 0,
-        milliseconds: 0 
+import { GET_SNAPSHOTS } from '../actions/index';
+export default function( state = [], action ) {
+    switch(action.type) {
+        case GET_SNAPSHOTS:  return action.payload
     }
+    return state;
 }

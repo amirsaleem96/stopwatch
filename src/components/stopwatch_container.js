@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
+import { getSnapshots } from '../actions/index';
 
 // This is a main container for stopwatch
 
@@ -13,7 +14,6 @@ class StopwatchContainer extends Component {
             seconds: 0,
             milliseconds: 0,
             watchHandle: null,
-            snapshots: [],
             buttons: [
                 {
                     type: 'start', 
@@ -79,8 +79,9 @@ class StopwatchContainer extends Component {
                                     alert('OOPS! it seems there is nothing to take snapshot of.');
                                     return;
                                 }
+                                let snapshots = this.props.snapshots;
                                 snapshots.push({ minutes, seconds, milliseconds });
-                                this.setState({ snapshots })
+                                this.props.getSnapshots( snapshots );
                                 break;
             case 'pause' :  clearInterval(this.state.watchHandle); 
                             buttons[index] = startButton;
@@ -93,7 +94,7 @@ class StopwatchContainer extends Component {
                             break;
             case 'clear-snapshots' : clearInterval(this.state.watchHandle);
                                      buttons[index]['disabled'] = true;
-                                     this.setState({ snapshots: [] });
+                                     this.props.getSnapshots( [] );
                                      break;
             default : return
         }
@@ -117,7 +118,7 @@ class StopwatchContainer extends Component {
         return val;
     }
     renderSnapshots() {
-        return this.state.snapshots.map((elem, index) => {
+        return this.props.snapshots.map((elem, index) => {
             return  <li className = 'list-group-item' key = {index}>
                         <strong>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</strong>
                         <i className = 'fa fa-trash delete-snapshot' onClick = {() => {
@@ -166,4 +167,4 @@ function mapStateToProps( stopwatch ) {
     return stopwatch;
 }
 
-export default connect(mapStateToProps)(StopwatchContainer);
+export default connect(mapStateToProps, { getSnapshots } )(StopwatchContainer);
