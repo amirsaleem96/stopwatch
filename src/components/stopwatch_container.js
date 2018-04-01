@@ -14,7 +14,7 @@ class StopwatchContainer extends Component {
             milliseconds: 0,
             watchHandle: null,
             snapshots: [],
-            buttons: ['start','snapshot','pause','reset']
+            buttons: ['start','snapshot','pause','reset','clear-snapshots']
         };
         this.handleWatch = this.handleWatch.bind(this);
         this.incrementTimer = this.incrementTimer.bind(this);
@@ -30,7 +30,7 @@ class StopwatchContainer extends Component {
                             this.setState({ watchHandle });
                             break;
             case 'snapshot' :   let snapshots = this.state.snapshots;
-                                var { minutes, seconds, milliseconds } = this.state;
+                                let { minutes, seconds, milliseconds } = this.state;
                                 if(minutes == 0 && seconds == 0 && milliseconds == 0){
                                     alert('OOPS! it seems there is nothing to take snapshot of.');
                                     return;
@@ -44,22 +44,17 @@ class StopwatchContainer extends Component {
             case 'pause' : clearInterval(this.state.watchHandle);   
                             break;
             case 'reset' : clearInterval(this.state.watchHandle);
-                            var userConfirm = confirm('reset snapshot as well ?');
-                            if(userConfirm){
-                                this.setState({
-                                    minutes: 0,
-                                    seconds: 0,
-                                    milliseconds: 0,
-                                    snapshots: []
-                                });
-                            } else {
-                                this.setState({
-                                    minutes: 0,
-                                    seconds: 0,
-                                    milliseconds: 0
-                                });
-                            }
+                            this.setState({
+                                minutes: 0,
+                                seconds: 0,
+                                milliseconds: 0
+                            });
                             break;
+            case 'clear-snapshots' : clearInterval(this.state.watchHandle);
+                                     this.setState({
+                                         snapshots: []
+                                     });
+                                     break;
             default : return
         }
     }
@@ -98,21 +93,22 @@ class StopwatchContainer extends Component {
     // render method
     render() {
         // returning JSX
-        var { minutes, seconds, milliseconds } = this.state;
+        let { minutes, seconds, milliseconds } = this.state;
         return(
             <div className = 'stopwatch-container'>
                 <div>
-                    <p>
-                        <span>{ this.getDoubleValue(minutes) }:</span>
-                        <span>{ this.getDoubleValue(seconds) }:</span>
+                    <p className = 'watch-data'>
+                        <span>{ this.getDoubleValue(minutes) }<span className = 'semicolon'>:</span></span>
+                        <span>{ this.getDoubleValue(seconds) }<span className = 'semicolon'>:</span></span>
                         <span>{ this.getDoubleValue(milliseconds) }</span>
-                        <span id = "status"></span>
                     </p>
+                    <div className = 'controller-wrapper'>
                     {
                         this.state.buttons.map((btn, index) => {
-                            return <button key = {index} onClick = {() => {this.handleWatch(btn)}}>{btn}</button>
+                            return <button className = 'btn btn-primary stopwatch-controller' key = {index} onClick = { () => {this.handleWatch(btn)} }>{btn.split('-').join(' ')}</button>
                         })
                     }
+                    </div>
                     <ul className = 'list-group'>
                         { this.renderSnapshots() }
                     </ul>
