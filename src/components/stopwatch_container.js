@@ -28,12 +28,6 @@ class StopwatchContainer extends Component {
                     disabled: false
                 },
                 { 
-                    type: 'pause',
-                    text: 'Pause',
-                    class: 'btn btn-primary stopwatch-controller',
-                    disabled: false
-                },
-                { 
                     type: 'reset',
                     text: 'Reset',
                     class: 'btn btn-danger stopwatch-controller',
@@ -62,7 +56,9 @@ class StopwatchContainer extends Component {
         });
         switch(type) {
             case 'start' :  let watchHandle = setInterval(this.incrementTimer, 1);
-                            buttons[index]['disabled'] = true;
+                            buttons[index]['type'] = 'pause';
+                            buttons[index]['text'] = 'Pause';
+                            buttons[index]['class'] = 'btn btn-primary stopwatch-controller'
                             this.setState({ watchHandle });
                             break;
             case 'snapshot' :   let snapshots = this.state.snapshots;
@@ -78,7 +74,9 @@ class StopwatchContainer extends Component {
                                 this.setState({ snapshots })
                                 break;
             case 'pause' :  clearInterval(this.state.watchHandle); 
-                            buttons[index]['disabled'] = true;
+                            buttons[index]['type'] = 'start';
+                            buttons[index]['text'] = 'Start';
+                            buttons[index]['class'] = 'btn btn-success stopwatch-controller'
                             this.setState({ buttons })
                             break;
             case 'reset' : clearInterval(this.state.watchHandle);
