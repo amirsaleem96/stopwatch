@@ -118,9 +118,7 @@ class StopwatchContainer extends Component {
     }
     renderSnapshots() {
         return this.state.snapshots.map((elem, index) => {
-            return  <li 
-                        className = 'list-group-item' 
-                        key = {index}>
+            return  <li className = 'list-group-item' key = {index}>
                         <strong>{`${elem.minutes}:${elem.seconds}:${elem.milliseconds}`}</strong>
                         <i className = 'fa fa-trash delete-snapshot' onClick = {() => {
                             let snapshots = this.state.snapshots;
@@ -145,10 +143,10 @@ class StopwatchContainer extends Component {
                     <div className = 'controller-wrapper'>
                     {
                         this.state.buttons.map((btn, index) => {
-                            return  <button className = { btn.class } 
-                                            key = {index} 
-                                            onClick = { (e) => { this.handleWatch( btn.type, index ) } } disabled = {btn.disabled}>
-                                            { btn.text }
+                            return  <button className = { btn.class } key = {index} onClick = { 
+                                            (e) => { this.handleWatch( btn.type, index ) } 
+                                         } disabled = {btn.disabled}>
+                                        { btn.text }
                                     </button>
                         })
                     }
