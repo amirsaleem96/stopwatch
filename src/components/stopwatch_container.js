@@ -52,6 +52,18 @@ class StopwatchContainer extends Component {
     handleWatch(type, index) { 
         let snapshots = this.state.snapshots;
         let { minutes, seconds, milliseconds, buttons } = this.state;
+        let pauseButton =  {
+            type: 'pause',
+            text: 'Pause',
+            class: 'btn btn-primary stopwatch-controller',
+            disabled: false
+        }
+        let startButton = {
+            type: 'start',
+            text: 'Start',
+            class: 'btn btn-success stopwatch-controller',
+            disabled: false
+        }
         minutes = this.getDoubleValue(minutes);
         seconds = this.getDoubleValue(seconds);
         milliseconds = this.getDoubleValue(milliseconds);
@@ -60,9 +72,7 @@ class StopwatchContainer extends Component {
         });
         switch(type) {
             case 'start':   let watchHandle = setInterval(this.incrementTimer, 1);
-                            buttons[index]['type'] = 'pause';
-                            buttons[index]['text'] = 'Pause';
-                            buttons[index]['class'] = 'btn btn-primary stopwatch-controller'
+                            buttons[index] = pauseButton;
                             this.setState({ watchHandle });
                             break;
             case 'snapshot' :   if(minutes == 0 && seconds == 0 && milliseconds == 0){
@@ -73,27 +83,17 @@ class StopwatchContainer extends Component {
                                 this.setState({ snapshots })
                                 break;
             case 'pause' :  clearInterval(this.state.watchHandle); 
-                            buttons[index]['type'] = 'start';
-                            buttons[index]['text'] = 'Start';
-                            buttons[index]['class'] = 'btn btn-success stopwatch-controller'
+                            buttons[index] = startButton;
                             this.setState({ buttons });
                             break;
             case 'reset' : clearInterval(this.state.watchHandle);
-                            buttons[0]['type'] = 'start';
-                            buttons[0]['text'] = 'Start';
-                            buttons[0]['class'] = 'btn btn-success stopwatch-controller'
+                            buttons[0] = startButton;
                             buttons[index]['disabled'] = true;
-                            this.setState({
-                                minutes: 0,
-                                seconds: 0,
-                                milliseconds: 0
-                            });
+                            this.setState({ minutes: 0, seconds: 0, milliseconds: 0 });
                             break;
             case 'clear-snapshots' : clearInterval(this.state.watchHandle);
                                      buttons[index]['disabled'] = true;
-                                     this.setState({
-                                         snapshots: []
-                                     });
+                                     this.setState({ snapshots: [] });
                                      break;
             default : return
         }
